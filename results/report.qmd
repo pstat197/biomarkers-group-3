@@ -34,12 +34,12 @@ Write a brief data description, including: how data were obtained; sample charac
 - has serum samples from 76 boys with ASD and 78 typically developing (TD) boys, 18 months-8 years of age
 - A total of 1,125 proteins were analyzed from each sample (1,317 measured, 192 unknown onesfailed quality control)
 
-
 - the published analysis excluded 192 unidentified variables that we will include in our analysis
 - ours includes simplifications: repeated RF (Random Forest) fitting, forward selection in the logistic regression model, and repeated estimation of AUROC (Area Under the Receiver Operating Characteristics) for the final classifier(s) were excluded.
 
 - Our goal: explore sensitivity of results to certain design choices methodology
 
+SAMPLE CHARACTERISTICS: see slide 6 of first lecture
 
 ## Summary of published analysis
 
