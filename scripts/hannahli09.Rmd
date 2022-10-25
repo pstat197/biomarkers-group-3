@@ -56,7 +56,7 @@ trim <- function(x, .at){
 remove the trimming 
 ```{r}
 biomarker_clean2 <- read_csv('/Users/kassandratrejo/Desktop/PSTAT197A/biomarkers-group-3/data/biomarker-raw.csv', 
-         skip = 2,
+         skip = 2, 
          col_select = -2L,
          col_names = c('group', 
                        'empty',
@@ -65,8 +65,8 @@ biomarker_clean2 <- read_csv('/Users/kassandratrejo/Desktop/PSTAT197A/biomarkers
          na = c('-', '')) %>%
   filter(!is.na(group)) %>%
   # log transform, center and scale, and trim
-  # mutate(across(.cols = -c(group, ados), 
-                # ~ trim(scale(log10(.x))[, 1], .at = 3))) %>%
+   #mutate(across(.cols = -c(group, ados), 
+               # ~ trim(scale(log10(.x))[, 1], .at = 3))) %>%
   # reorder columns
   select(group, ados, everything())
 ```
@@ -75,4 +75,15 @@ biomarker_clean2 <- read_csv('/Users/kassandratrejo/Desktop/PSTAT197A/biomarkers
 view(biomarker_clean2)
 ```
 
+```{r}
+biomarker_clean2 <- read_csv('/Users/kassandratrejo/Desktop/PSTAT197A/biomarkers-group-3/data/biomarker-raw.csv', 
+         skip = 2, 
+         col_select = -2L,
+         col_names = c('group', 
+                       'empty',
+                       pull(var_names, abbreviation),
+                       'ados'),
+         na = c('-', '')) %>% 
+  select(group, ados, everything())
+```
 
