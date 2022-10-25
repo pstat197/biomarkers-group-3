@@ -31,6 +31,48 @@ group or the other? (Hint: consider tabluating the number of outlying values per
 head(biomarker_clean)
 ```
 
+from the preprocessing file
+```{r}
+var_names <- read_csv('/Users/kassandratrejo/Desktop/PSTAT197A/biomarkers-group-3/data/biomarker-raw.csv',
+                     col_names = F, 
+                     n_max = 2, 
+                     col_select = -(1:2)) %>%
+  t() %>%
+  as_tibble() %>%
+  rename(name = V1, 
+         abbreviation = V2) %>%
+  na.omit()
+```
 
+
+```{r}
+# function for trimming outliers (good idea??)
+trim <- function(x, .at){
+  x[abs(x) > .at] <- sign(x[abs(x) > .at])*.at
+  return(x)
+}
+```
+
+remove the trimming 
+```{r}
+biomarker_clean2 <- read_csv('/Users/kassandratrejo/Desktop/PSTAT197A/biomarkers-group-3/data/biomarker-raw.csv', 
+         skip = 2,
+         col_select = -2L,
+         col_names = c('group', 
+                       'empty',
+                       pull(var_names, abbreviation),
+                       'ados'),
+         na = c('-', '')) %>%
+  filter(!is.na(group)) %>%
+  # log transform, center and scale, and trim
+  # mutate(across(.cols = -c(group, ados), 
+                # ~ trim(scale(log10(.x))[, 1], .at = 3))) %>%
+  # reorder columns
+  select(group, ados, everything())
+```
+
+```{r}
+view(biomarker_clean2)
+```
 
 
