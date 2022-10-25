@@ -1,0 +1,16 @@
+---
+title: "hannahli09 part 2"
+author: "Hannah Li, 8264178"
+date: "2022-10-25"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##Sample Characteristics
+
+```{r cars}
+summary(cars)
+```
