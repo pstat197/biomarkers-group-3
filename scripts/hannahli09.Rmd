@@ -46,7 +46,12 @@ head(biomarker_clean)
 
 from the preprocessing file
 ```{r}
-var_names <- read_csv('data/biomarker-raw.csv', 
+# url <- 'https://raw.githubusercontent.com/pstat197/pstat197a/main/materials/labs/lab3-iteration/data/biomarker-raw.csv'
+
+
+# file path for Kassandra: /Users/kassandratrejo/Desktop/PSTAT197A/biomarkers-group-3/data/biomarker-raw.csv
+
+var_names <- read_csv('/Users/hannahli/Documents/Github/biomarkers-group-3/data/biomarker-raw.csv', 
                      col_names = F, 
                      n_max = 2, 
                      col_select = -(1:2)) %>%
@@ -68,8 +73,10 @@ trim <- function(x, .at){
 
 remove the trimming 
 ```{r}
-biomarker_clean2 <- read_csv('/Users/kassandratrejo/Desktop/PSTAT197A/biomarkers-group-3/data/biomarker-raw.csv', 
-         skip = 2, 
+# file path for Kassandra: /Users/kassandratrejo/Desktop/PSTAT197A/biomarkers-group-3/data/biomarker-raw.csv
+
+biomarker_clean2 <- read_csv('/Users/hannahli/Documents/Github/biomarkers-group-3/data/biomarker-raw.csv', 
+         skip = 2,
          col_select = -2L,
          col_names = c('group', 
                        'empty',
@@ -79,7 +86,7 @@ biomarker_clean2 <- read_csv('/Users/kassandratrejo/Desktop/PSTAT197A/biomarkers
   filter(!is.na(group)) %>%
   # log transform, center and scale, and trim
   mutate(across(.cols = -c(group, ados), 
-                ~ scale(log10(.x)[,1]))) %>%
+                ~ scale(log10(.x))[, 1], .at = 3)) %>%
   # reorder columns
   select(group, ados, everything())
 ```
@@ -89,15 +96,29 @@ view(biomarker_clean2)
 ```
 
 ```{r}
-biomarker_clean2 <- read_csv('/Users/kassandratrejo/Desktop/PSTAT197A/biomarkers-group-3/data/biomarker-raw.csv', 
-         skip = 2, 
+biomarker_clean <- read_csv('/Users/hannahli/Documents/Github/biomarkers-group-3/data/biomarker-raw.csv', 
+         skip = 2,
          col_select = -2L,
          col_names = c('group', 
                        'empty',
                        pull(var_names, abbreviation),
                        'ados'),
-         na = c('-', '')) %>% 
+         na = c('-', '')) %>%
+  filter(!is.na(group)) %>%
+  # log transform, center and scale, and trim
+  mutate(across(.cols = -c(group, ados), 
+                ~ trim(scale(log10(.x))[, 1], .at = 3))) %>%
+  # reorder columns
   select(group, ados, everything())
+
+
+boxplot(biomarker_clean[,2])
+boxplot(biomarker_clean[,3:50])
+
+ggplot(biomarker_clean) +
+  aes(x = "", y = hwy) +
+  geom_boxplot(fill = "#0c4c8a") +
+  theme_minimal()
 ```
 
 Experiment with the training data 
