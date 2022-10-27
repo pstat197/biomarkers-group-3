@@ -1,0 +1,125 @@
+---
+title: "Question 3"
+output: html_document
+date: "2022-10-27"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r} 
+library(tidyverse)
+library(infer)
+library(randomForest)
+library(tidymodels)
+library(modelr)
+library(yardstick)
+```
+
+```{r}
+View(biomarker_clean)
+```
+
+
+Experiment with the training data 
+
+1. repeat the analysis but carry out the entire selection procedure on a training partition.- set aside some testing data for the end 
+2. choose a larger number of top predictive proteins using each selection method 
+3. use a fuzzy intersection instead of a hard intersection to combine
+the sets of top predictive proteins across selection methods. 
+
+```{r}
+set.seed(638)
+biomarker_split<-initial_split(biomarker_clean, prop= 0.70,strata=group)
+biomarker_train<-training(biomarker_split)
+biomarker_test<-testing(biomarker_split)
+```
+
+Random Forest
+```{r}
+predictors<- biomarker_train %>% 
+  select(-c(group,ados))
+
+response <- biomarker_train %>%  pull(group) %>%  factor()
+
+# fit the Random Forest 
+random_f<-randomForest(x= predictors, 
+                       y = response,
+                       ntree= 2000,
+                       importance= T)
+# check the errors 
+random_f$confusion
+
+# compute the importance scores 
+proteins_1<-random_f$importance %>% 
+  as_tibble() %>% 
+  mutate(protein= rownames(random_f$importance)) %>% 
+  slice_max(MeanDecreaseGini, n = 20) %>% 
+  pull(protein)
+```
+
+```{r}
+proteins_1
+```
+
+T-testing 
+```{r}
+tt_fn<-function(.df) {
+  t_test(.df,
+         formula = level ~ group,
+         order= c('ASD', 'TD'), alternative = 'two-sided',
+         var.equal = F)
+}
+
+ttests_1<- biomarker_train %>% 
+  select(-ados) %>% 
+  pivot_longer(-group, names_to = 'protein', values_to = 'level' ) %>% 
+  nest(data=c(level, group)) %>% 
+  mutate(ttest = map(data, tt_fn)) %>% 
+  unnest(ttest) %>% 
+  arrange(p_value) %>% 
+  mutate( r= n(), hm= log(r) +1/(2*r) - digamma(1), rank=row_number(), 
+          p.adj= r*hm*p_value/rank)
+
+proteins_2<-ttests_1 %>% 
+  slice_min(p.adj, n =20) %>% 
+  pull(protein)
+```
+
+```{r}
+proteins_2
+```
+
+Logistic Regression 
+
+```{r}
+proteins_subset<-intersect(proteins_1,proteins_2)
+
+biomarker_sset<- biomarker_train %>% 
+  select(group, any_of(proteins_subset)) %>% 
+  mutate(class= (group == 'ASD')) %>% 
+  select(-group)
+
+set.seed(549)
+biomarker_split2<-biomarker_sset %>% 
+  initial_split(prop=0.70)
+
+fit<-glm(class ~., data=training(biomarker_split2), family= 'binomial')
+
+class_metrics<-metric_set(sensitivity, specificity, accuracy,roc_auc)
+
+testing(biomarker_split2) %>% 
+  add_predictions(fit, type= 'response') %>% 
+  class_metrics(estimate = factor(pred > 0.5), 
+                truth= factor(class), pred, event_level = 'second')
+```
+
+top 10 
+```{r}
+fit %>% 
+  broom::tidy() %>% 
+  knitr::kable() 
+```
+
