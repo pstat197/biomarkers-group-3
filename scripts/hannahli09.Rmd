@@ -5,6 +5,19 @@ date: "10/18/2022"
 output: html_document
 ---
 
+
+# Questions for professor
+1. file urls not working
+2. trimming - only ended up with 1 outlier
+3. question 3- "repeat the analysis" does this mean repeat all three methods in the report or like exploratory analysis
+4. what is fuzzy intersections vs hard intersection
+
+----------------
+# other things to do
+5. sensitivity and accuracy tables/ visuals in question 3
+6. make final table with  sensitivity and accuracy at the end 
+
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -33,7 +46,7 @@ head(biomarker_clean)
 
 from the preprocessing file
 ```{r}
-var_names <- read_csv('/Users/kassandratrejo/Desktop/PSTAT197A/biomarkers-group-3/data/biomarker-raw.csv',
+var_names <- read_csv('data/biomarker-raw.csv', 
                      col_names = F, 
                      n_max = 2, 
                      col_select = -(1:2)) %>%
@@ -70,7 +83,7 @@ biomarker_clean2 <- read_csv('/Users/kassandratrejo/Desktop/PSTAT197A/biomarkers
   # reorder columns
   select(group, ados, everything())
 ```
-
+ 
 ```{r}
 view(biomarker_clean2)
 ```
