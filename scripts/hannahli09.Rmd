@@ -65,8 +65,8 @@ biomarker_clean2 <- read_csv('/Users/kassandratrejo/Desktop/PSTAT197A/biomarkers
          na = c('-', '')) %>%
   filter(!is.na(group)) %>%
   # log transform, center and scale, and trim
-   #mutate(across(.cols = -c(group, ados), 
-               # ~ trim(scale(log10(.x))[, 1], .at = 3))) %>%
+  mutate(across(.cols = -c(group, ados), 
+                ~ scale(log10(.x)[,1]))) %>%
   # reorder columns
   select(group, ados, everything())
 ```
@@ -85,5 +85,46 @@ biomarker_clean2 <- read_csv('/Users/kassandratrejo/Desktop/PSTAT197A/biomarkers
                        'ados'),
          na = c('-', '')) %>% 
   select(group, ados, everything())
+```
+
+Experiment with the training data 
+
+1. repeat the analysis but carry out the entire selection procedure on a training partition.- set aside some testing data for the end 
+2. choose a larger number of top predictive proteins using each selection method 
+3. use a fuzzy intersection instead of a hard intersection to combine
+the sets of top predictive proteins across selection methods. 
+
+```{r}
+set.seed(638)
+biomarker_split<-initial_split(biomarker_clean, prop= 0.70,strata=group)
+biomarker_train<-training(biomarker_split)
+biomarker_test<-testing(biomarker_split)
+```
+
+Random Forest
+```{r}
+predictors<- biomarker_train %>% 
+  select(-c(group,ados))
+
+response <- biomarker_train %>%  pull(group) %>%  factor()
+
+# fit the Random Forest 
+random_f<-randomForest(x= predictors, 
+                       y = response,
+                       ntree= 2000,
+                       importance= T)
+# check the errors 
+random_f$confusion
+
+# compute the importance scores 
+proteins_1<-random_f$importance %>% 
+  as_tibble() %>% 
+  mutate(protein= rownames(random_f$importance)) %>% 
+  slice_max(MeanDecreaseGini, n = 20) %>% 
+  pull(protein)
+```
+
+```{r}
+proteins_1
 ```
 
