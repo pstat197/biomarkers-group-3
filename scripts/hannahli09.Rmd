@@ -119,6 +119,12 @@ ggplot(biomarker_clean) +
   aes(x = "", y = hwy) +
   geom_boxplot(fill = "#0c4c8a") +
   theme_minimal()
+
+
+
+biomarker_clean %>%
+  group_by(group)%>%
+  summarise(n=mean)
 ```
 
 Experiment with the training data 
