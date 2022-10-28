@@ -13,6 +13,8 @@ biomarkerRaw <- as.data.frame(biomarkerRaw)
 
 # Arbitrary Sample of 10 Proteins
 biomarkerRaw <- biomarkerRaw %>% select(15:25)
+
+# Pivot Long for ease of use in GGPlot
 biomarkerRaw <- biomarkerRaw %>% 
   pivot_longer(everything(), names_to = "protein", values_to = "value") %>%
   arrange(protein)
