@@ -183,3 +183,24 @@ choose the top proteins with the highest absolute values of the correlation coef
 - used with datasets based on the random forest, t-test, and correlation models (group (ASD or TD) is output)
 - randomly assigned 80% as training and 20% as test data. 
 - calculated model's AUC to evaluate it.
+
+## Fuzzy Intersection 
+
+```{r}
+library(arsenal)
+
+protein_1<-data.frame(proteins_1)
+protein_2<-data.frame(proteins_2)
+
+names(protein_1)[names(protein_1) == "proteins_1"] <- "protein"
+names(protein_2)[names(protein_2) == "proteins_2"] <- "protein"
+common_protein<-generics::intersect(protein_1,protein_2)
+view(common_protein)
+```
+
+In a fuzzy intersection we examine the elements that are common in at least n of the
+sets. Therefore in this experiment we can look at the proteins that were selected in
+two of the models. In this case we used the random forest model and the t-test model
+to examine which ten proteins were common among them. After using each model on our 
+data we found that the "Top 10" common proteins were IgD, Cadherin-5, RELT, DERM, 
+ILT-4, Troponin I, skeletal,fast twitch, MAPK2, MATN2, IGFBP-1,M2-PK. 
