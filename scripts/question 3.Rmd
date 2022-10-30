@@ -26,7 +26,7 @@ View(biomarker_clean)
 Experiment with the training data 
 
 1. repeat the analysis but carry out the entire selection procedure on a training partition.- set aside some testing data for the end 
-2. choose a larger number of top predictive proteins using each selection method 
+2. choose a larger number of top predictive proteins using each selection method (USE 20 PROTEINS)
 3. use a fuzzy intersection instead of a hard intersection to combine
 the sets of top predictive proteins across selection methods. 
 
@@ -61,7 +61,7 @@ proteins_1<-random_f$importance %>%
 ```
 
 ```{r}
-proteins_1
+proteins_1 # top 20
 ```
 
 T-testing 
@@ -89,7 +89,80 @@ proteins_2<-ttests_1 %>%
 ```
 
 ```{r}
-proteins_2
+proteins_2 # top 20
+```
+
+Correlation with ADOS
+```{r}
+asd_clean <- biomarker_train %>% 
+  select(group, ados) %>% 
+  group_by(group) %>% 
+  sample_n(size = 2)  # ados is only measured for the ASD group
+asd_clean
+
+biomarker_clean[76,]
+
+biomarker_clean %>%
+  group_by(group)
+
+cors <- data.frame(matrix(ncol= 2, nrow=0))
+colnames(cors) <- c('protein', 'correlation')
+
+for (i in length(colnames(biomarker_train[,-c(1,2)])[1:4])){
+  #print(i)
+  cor_i <- cor(biomarker_clean[1:76,]$ados,biomarker_clean[1:76,i])
+  #print(cor_i)
+  print(cor_i)
+  #row_i <- cbind(i,cor_i)
+  #cors <- rbind(cors, row_i)
+}
+cors
+
+
+for (i in length(colnames(biomarker_train[,-c(1,2)])[1:4])){
+  #print(i)
+  cor_i <- cor(biomarker_clean[1:76,]$ados, biomarker_clean[1:76,-c(1,2)][i])
+  
+  
+  row_i <- cbind(colnames(biomarker_train[,-c(1,2)])[i],cor_i[[1,1]])
+  cors <- rbind(cors, row_i)
+}
+
+cors
+
+
+
+
+for (i in length(biomarker_clean[-c(1,2)])){
+  #print(i)
+  cor_i <- cor(biomarker_clean[1:76,]$ados, biomarker_clean[1:76,-c(1,2)][1])
+  
+  
+  row_i <- cbind(colnames(biomarker_train[,-c(1,2)])[1], cor_i[[1,1]])
+  cors <- rbind(cors, row_i)
+}
+
+cors
+
+
+# compute correlations
+asd_clean %>%
+  pivot_longer(cols = -ados,
+               names_to = 'protein',
+               values_to = 'level') %>%
+  group_by(protein) %>%
+  summarize(correlation = cor(ados, level))
+
+biomarker_clean[,2:23]%>%
+  pivot_longer(cols = -ados,
+               names_to = 'protein',
+               values_to = 'level') %>%
+  group_by(protein) %>%
+  summarize(correlation = cor(ados, level))
+```
+
+```{r}
+proteins_2 # top 20
 ```
 
 Logistic Regression 
