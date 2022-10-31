@@ -116,22 +116,42 @@ boxplot(biomarker_clean[,2]) #ados
 
 boxplot(biomarker_clean2[,3:50]) # all proteins
 
+
+#stupid
 ggplot(biomarker_clean2) +
   aes(x = "", y = group) +
   geom_boxplot(fill = "#0c4c8a") +
   theme_minimal()
 
 
-
+#no
 biomarker_clean2 %>%
   group_by(group)%>%
   summarise(n=mean)
 
+#yes
 install.packages('dlookr')
 library(dlookr)
 outliers <- diagnose_outlier(biomarker_clean2)
 outliers %>%
-  arrange(desc(outliers_cnt))
+  arrange(desc(outliers_cnt))%>%
+  head(10)%>%
+  select(protein=variables,outliers_cnt)
+
+
+
+plot_outlier(biomarker_clean2)
+
+outliers %>%
+  arrange(desc(outliers_ratio))%>%
+  head(10)%>%
+  select(protein=variables,outliers_ratio,outliers_mean)
+
+outliers %>%
+  mutate(mean_difference=abs(without_outliers_mean-with_mean))%>%
+  arrange(desc(mean_difference)) %>%
+  select(protein=variables,with_outliers_mean=with_mean, without_outliers_mean =without_mean) %>%
+  head(20)
 ```
 
 Experiment with the training data 
