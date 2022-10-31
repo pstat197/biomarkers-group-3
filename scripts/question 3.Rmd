@@ -106,19 +106,24 @@ biomarker_clean %>%
   group_by(group)
 
 cors <- data.frame(matrix(ncol= 2, nrow=0))
+
+
+ASD_proteins <-biomarker_clean[1:76,-c(1,2)]
+# currently working on
+for (i in 1:length(ASD_proteins)){
+  #print(i)
+  cor_i <- cor(biomarker_clean[1:76,]$ados, ASD_proteins[i]) 
+  
+  
+  row_i <- cbind(colnames(biomarker_train[,-c(1,2)])[i], cor_i[[1,1]])
+  cors <- rbind(cors, row_i)
+}
 colnames(cors) <- c('protein', 'correlation')
 
-for (i in length(colnames(biomarker_train[,-c(1,2)])[1:4])){
-  #print(i)
-  cor_i <- cor(biomarker_clean[1:76,]$ados,biomarker_clean[1:76,i])
-  #print(cor_i)
-  print(cor_i)
-  #row_i <- cbind(i,cor_i)
-  #cors <- rbind(cors, row_i)
-}
 cors
 
 
+# not right
 for (i in length(colnames(biomarker_train[,-c(1,2)])[1:4])){
   #print(i)
   cor_i <- cor(biomarker_clean[1:76,]$ados, biomarker_clean[1:76,-c(1,2)][i])
@@ -128,24 +133,10 @@ for (i in length(colnames(biomarker_train[,-c(1,2)])[1:4])){
   cors <- rbind(cors, row_i)
 }
 
-cors
-
-
-
-
-for (i in length(biomarker_clean[-c(1,2)])){
-  #print(i)
-  cor_i <- cor(biomarker_clean[1:76,]$ados, biomarker_clean[1:76,-c(1,2)][1])
-  
-  
-  row_i <- cbind(colnames(biomarker_train[,-c(1,2)])[1], cor_i[[1,1]])
-  cors <- rbind(cors, row_i)
-}
 
 cors
 
-
-# compute correlations
+# compute correlations, not right
 asd_clean %>%
   pivot_longer(cols = -ados,
                names_to = 'protein',
