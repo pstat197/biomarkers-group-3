@@ -117,9 +117,11 @@ for (i in 1:length(ASD_proteins)){
   row_i <- cbind(colnames(biomarker_train[,-c(1,2)])[i], cor_i[[1,1]])
   cors <- rbind(cors, row_i)
 }
-colnames(cors) <- c('protein', 'correlation')
 
-cors 
+cors <- data.frame(cors)
+colnames(cors) <- c('protein', 'correlation')
+cors
+
 head(sort(cors$profits,decreasing=TRUE), n = 50)
 
 # not right
