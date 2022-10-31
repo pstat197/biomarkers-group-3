@@ -112,25 +112,32 @@ biomarker_clean <- read_csv('/Users/hannahli/Documents/Github/biomarkers-group-3
   select(group, ados, everything())
 
 
-boxplot(biomarker_clean[,2])
-boxplot(biomarker_clean[,3:50])
+boxplot(biomarker_clean[,2]) #ados
 
-ggplot(biomarker_clean) +
+boxplot(biomarker_clean2[,3:50]) # all proteins
+
+ggplot(biomarker_clean2) +
   aes(x = "", y = group) +
   geom_boxplot(fill = "#0c4c8a") +
   theme_minimal()
 
 
 
-biomarker_clean %>%
+biomarker_clean2 %>%
   group_by(group)%>%
   summarise(n=mean)
+
+install.packages('dlookr')
+library(dlookr)
+outliers <- diagnose_outlier(biomarker_clean2)
+outliers %>%
+  arrange(desc(outliers_cnt))
 ```
 
 Experiment with the training data 
 
 1. repeat the analysis but carry out the entire selection procedure on a training partition.- set aside some testing data for the end 
-2. choose a larger number of top predictive proteins using each selection method 
+2. choose a larger number of top predictive proteins using each selection method (USE 20 PROTEINS)
 3. use a fuzzy intersection instead of a hard intersection to combine
 the sets of top predictive proteins across selection methods. 
 
@@ -165,7 +172,7 @@ proteins_1<-random_f$importance %>%
 ```
 
 ```{r}
-proteins_1
+proteins_1 # top 20
 ```
 ## T-test method
 
@@ -183,24 +190,3 @@ choose the top proteins with the highest absolute values of the correlation coef
 - used with datasets based on the random forest, t-test, and correlation models (group (ASD or TD) is output)
 - randomly assigned 80% as training and 20% as test data. 
 - calculated model's AUC to evaluate it.
-
-## Fuzzy Intersection 
-
-```{r}
-library(arsenal)
-
-protein_1<-data.frame(proteins_1)
-protein_2<-data.frame(proteins_2)
-
-names(protein_1)[names(protein_1) == "proteins_1"] <- "protein"
-names(protein_2)[names(protein_2) == "proteins_2"] <- "protein"
-common_protein<-generics::intersect(protein_1,protein_2)
-view(common_protein)
-```
-
-In a fuzzy intersection we examine the elements that are common in at least n of the
-sets. Therefore in this experiment we can look at the proteins that were selected in
-two of the models. In this case we used the random forest model and the t-test model
-to examine which ten proteins were common among them. After using each model on our 
-data we found that the "Top 10" common proteins were IgD, Cadherin-5, RELT, DERM, 
-ILT-4, Troponin I, skeletal,fast twitch, MAPK2, MATN2, IGFBP-1,M2-PK. 
