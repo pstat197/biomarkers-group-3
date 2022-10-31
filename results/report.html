@@ -172,7 +172,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="impact-of-preprocessing-and-outliers" class="level3">
 <h3 class="anchored" data-anchor-id="impact-of-preprocessing-and-outliers">Impact of preprocessing and outliers</h3>
 <p>The first task required us to use the raw data to examine the distribution of the protein amounts. We did this in order to find out why the data was log transformed in the final version of the data set, before they began to use the data set for modeling and predictive purposes.</p>
-<p>The first step we took during this task was to grab a sample of proteins from the data set. In the interest of randomness and simplicity, we pulled columns 15:25 from the raw data set, giving us a sample of 10 unknown proteins. Secondly, we pivoted the data long, in order to simplify our next task in ggplot. Lastly, we created histograms of the random sample of 10 proteins (reminder that these results are from the raw data before any log transformations).</p>
+<p>The first step we took during this task was to grab a sample of proteins from the data set. In the interest of randomness and simplicity, we pulled columns 15:25 from the raw data set, giving us a sample of 10 unknown proteins. Secondly, we pivoted the data long, in order to simplify our next task in ggplot.</p>
 <div class="cell" data-hash="report_cache/html/unnamed-chunk-2_e1379ff1ceed65a38f3ed03b792c2ff0">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>biomarkerRaw <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">'../data/biomarker-raw.csv'</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -190,7 +190,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">everything</span>(), <span class="at">names_to =</span> <span class="st">"protein"</span>, <span class="at">values_to =</span> <span class="st">"value"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(protein)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>After examining the histograms of the raw data, it is clear to see why the team decided to log transform the protein levels before beginning statistical analysis. The purpose of log transforming data is to make highly skewed data less skewed, which can be valuable for a many different purposes including predictive modeling. In addition to being highly skewed, most of the proteins have a high density in a small area, which a log transformation will also help with.</p>
+<p>Lastly, we created histograms of the random sample of 10 proteins (reminder that these results are from the raw data before any log transformations).</p>
 <div class="cell" data-hash="report_cache/html/unnamed-chunk-3_20fa2ed4470992c4b87d4cb77aeb7a1a">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Assessing the distribution</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>biomarkerRaw <span class="sc">%&gt;%</span></span>
@@ -202,6 +202,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><img src="report_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
+<p>After examining the histograms of the raw data, it is clear to see why the team decided to log transform the protein levels before beginning statistical analysis. The purpose of log transforming data is to make highly skewed data less skewed, which can be valuable for a many different purposes including predictive modeling. In addition to being highly skewed, most of the proteins have a high density in a small area, which a log transformation will also help with.</p>
 <p>(INSERT TASK TWO DOCUMENTATION HERE)</p>
 </section>
 <section id="methodlogical-variations" class="level3">
