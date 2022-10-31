@@ -122,8 +122,9 @@ cors <- data.frame(cors)
 colnames(cors) <- c('protein', 'correlation')
 cors
 
+
 cors %>%
-  arrange(desc(correlation))%>%
+  arrange(desc(abs(as.numeric(cors$correlation))))%>%
   head(20)
 
 # not right
