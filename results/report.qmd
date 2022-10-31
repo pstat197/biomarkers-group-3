@@ -65,6 +65,8 @@ Summarize your findings here. I've included some subheaders in a way that seems 
 
 Tasks 1-2
 
+The first task required us to use the raw data to examine the distribution of the protein amounts. We did this in order to find out why the data was log transformed in the final version of the data set, before they began to use the data set for modeling and predictive purposes. The first step we took during this task was to grab a sample of proteins from the data set. In the interest of randomness and simplicity, we pulled columns 15:25 from the raw data set, giving us a sample of 10 unknown proteins.
+
 ### Methodlogical variations
 
 In the third task we conducted the same experiment from the paper but this time we partitioned the data into a testing and training data set in order to conduct accuracy metrics with our models and testing set. Instead of only selecting the top ten proteins from each model and the common proteins among them, in this analysis we selected the top twenty proteins from the random forest model, the t-test, and the correlation with ADOS model. From there we used a fuzzy intersection, where we examined the elements that are common in at least n of the sets. Therefore in this experiment we can look at the proteins that were selected in two of the models. In this case we used the random forest model and the t-test model to examine which ten proteins were common among them. After using each model on our data we found that the "Top 10" common proteins were IgD, Cadherin-5, RELT, DERM, LT-4, Troponin I, skeletal,fast twitch, MAPK2, MATN2, IGFBP-1,M2-PK. These are identified as the "Core Proteins" that were common to both of the methods.
