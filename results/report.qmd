@@ -19,7 +19,7 @@ library(tidymodels)
 
 ## Abstract
 
-Write a brief one-paragraph abstract that describes the contents of your write-up.
+This project revolves around a dataset which seeks to find a statistical association between levels of proteins in plasma/serum and diagnosed Autism Spectrum Disorder (ASD). A brief description of the sample states that 76 boys with ASD, and 78 typically developing boys were the sample for the dataset. Preprocessing of the raw data file is critical to making a statistical analysis; a log transformation is needed on the raw data file as almost all of the protein levels show a skewed, and high density distribution. Exploratory analysis of outlying values is described after the preprocessing. The methodology used in the predictive portion of the research paper that this project is based off of was used with altered parameters (top 20 proteins instead of top 10). We seek to find a comparable protein panel that achieves the same and/or improved classification accuracy.
 
 ## Dataset
 
