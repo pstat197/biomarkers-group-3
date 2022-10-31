@@ -140,7 +140,7 @@ outliers %>%
 
 
 
-plot_outlier(biomarker_clean2)
+plot_outlier(diagnose_outlier(biomarker_clean2))[4]
 
 outliers %>%
   arrange(desc(outliers_ratio))%>%

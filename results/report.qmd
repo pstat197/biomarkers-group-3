@@ -155,6 +155,31 @@ plot_outlier(diagnose_outlier(biomarker_clean2))
 
 In the third task we conducted the same experiment from the paper but this time we partitioned the data into a testing and training data set in order to conduct accuracy metrics with our models and testing set. Instead of only selecting the top ten proteins from each model and the common proteins among them, in this analysis we selected the top twenty proteins from the random forest model, the t-test, and the correlation with ADOS model. From there we used a fuzzy intersection, where we examined the elements that are common in at least n of the sets. Therefore in this experiment we can look at the proteins that were selected in two of the models. In this case we used the random forest model and the t-test model to examine which ten proteins were common among them. After using each model on our data we found that the "Top 10" common proteins were IgD, Cadherin-5, RELT, DERM, LT-4, Troponin I, skeletal,fast twitch, MAPK2, MATN2, IGFBP-1,M2-PK. These are identified as the "Core Proteins" that were common to both of the methods.
 
+
+Correlation with ADOS
+
+```{r}
+cors <- data.frame(matrix(ncol= 2, nrow=0))
+
+ASD_proteins <-biomarker_clean[1:76,-c(1,2)]
+
+for (i in 1:length(ASD_proteins)){
+  #print(i)
+  cor_i <- cor(biomarker_clean[1:76,]$ados, ASD_proteins[i]) 
+
+  row_i <- cbind(colnames(biomarker_train[,-c(1,2)])[i], cor_i[[1,1]])
+  cors <- rbind(cors, row_i)
+}
+
+cors <- data.frame(cors)
+colnames(cors) <- c('protein', 'correlation')
+
+cors %>%
+  arrange(desc(correlation))%>%
+  head(20)
+```
+
+
 ### Improved classifier
 
 Task 4
