@@ -12,6 +12,7 @@ execute:
   echo: false
   cache: true
 ---
+
 ```{r}
 library(tidyverse)
 library(tidymodels)
@@ -23,23 +24,13 @@ library(dlookr)
 This project revolves around a dataset which seeks to find a statistical association between levels of proteins in plasma/serum and diagnosed Autism Spectrum Disorder (ASD). A brief description of the sample states that 76 boys with ASD, and 78 typically developing boys were the sample for the dataset. Preprocessing of the raw data file is critical to making a statistical analysis; a log transformation is needed on the raw data file as almost all of the protein levels show a skewed, and high density distribution. Exploratory analysis of outlying values is described after the preprocessing. The methodology used in the predictive portion of the research paper that this project is based off of was used with altered parameters (top 20 proteins instead of top 10). We seek to find a comparable protein panel that achieves the same and/or improved classification accuracy.
 
 ## Dataset
--   Background: levels of proteins in plasma/serum are altered in autism spectrum disorder (ASD)
 
--   Data comes from Hewitson et al. (2021). Blood biomarker discovery for autism spectrum disorder: A proteomic analysis. PLoS One. 2021 Feb 24
+Write a brief data description, including: how data were obtained; sample characteristics; variables measured; and data preprocessing. This can be largely based on the source paper and should not exceed 1-2 paragraphs.
 
--   Has serum samples from 76 boys with ASD and 78 typically developing (TD) boys, 18 months-8 years of age
+In this study a total of 154 boys were enrolled and split into two groups, ASD and TD. The ASD group had a mean age of 5.6 years and the TD group had a similar mean age of 5.7 years. The factors focused on in this data was the ethnicity with a majority White/Caucasian, Co-morbid conditions where many reported none and some reported seasonal allergies, and lastly psychiatric medications where again almost all but a few reported none. They were given an ADOS total score that clinical psychologists were able to determine using diagnostic algorithms. These scores are used to test ASD severity among groups. The samples taken from these boys was in the form of a fasting blood draw. Where the boys gave 3.5 ml in the morning before they ate. The blood samples underwent inversions, being centrifuged, and transferred to coded cryovials where it was then shipped to SomaLogic labs for further analysis.
 
--   A total of 1,125 proteins were analyzed from each sample (1,317 measured, 192 unknown onesfailed quality control)
 
--   The published analysis excluded 192 unidentified variables that we will include in our analysis
-
--   Outliers were handled by clipping any z-transformed values less than -3 and greater than 3 to -3 and 3, respectively.
-
--   Includes simplifications: repeated RF (Random Forest) fitting, forward selection in the logistic regression model, and repeated estimation of AUROC (Area Under the Receiver Operating Characteristics) for the final classifier(s) were excluded.
-
--   Our goal: explore sensitivity of results to certain design choices methodology
-
-SAMPLE CHARACTERISTICS: see slide 6 of first lecture
+Originally, 1317 proteins were measured as the optimal subset of proteins for ASD measure. However, after performing quality control there were 192 unidentified variables that were then excluded from the analysis leaving us with 1125 proteins to conduct our analysis on. We analyzed these proteins but before doing so, some data preprocessing was conducted. Here we normalized and log transformed the data and to deal with any outliers we z transformed values that were either greater than 3 or less than -3. From here we are able to fit our models to the data to obtain our top predictive proteins.
 
 ## Summary of published analysis
 
