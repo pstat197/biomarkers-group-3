@@ -15,6 +15,7 @@ execute:
 ```{r}
 library(tidyverse)
 library(tidymodels)
+library(dlookr)
 ```
 
 ## Abstract
@@ -92,7 +93,53 @@ biomarkerRaw %>%
 
 After examining the histograms of the raw data, it is clear to see why the team decided to log transform the protein levels before beginning statistical analysis. The purpose of log transforming data is to make highly skewed data less skewed, which can be valuable for a many different purposes including predictive modeling. In addition to being highly skewed, most of the proteins have a high density in a small area, which a log transformation will also help with.
 
-(INSERT TASK TWO DOCUMENTATION HERE)
+
+We then proceeded to remove the outlier trimming completed during preprocessing of the biomarker data. All observations that had values outside the interval (-3,3) had their values reverted back to normal.
+
+```{R echo=TRUE}
+biomarker_out <- read_csv('../data/biomarker-raw.csv', show_col_types = FALSE, 
+         skip = 2,
+         col_select = -2L,
+         col_names = c('group', 
+                       'empty',
+                       pull(var_names, abbreviation),
+                       'ados'),
+         na = c('-', '')) %>%
+  filter(!is.na(group)) %>%
+  # log transform, center and scale, and trim
+  mutate(across(.cols = -c(group, ados), 
+                ~ scale(log10(.x))[, 1], .at = 3)) %>%
+  # reorder columns
+  select(group, ados, everything())
+
+
+head(biomarker_out, 15)
+```
+
+We constructed a boxplot for the values of all proteins. As seen in the plot, many of the proteins have significant outliers that lie far above or below the majority of the rest of the data.
+
+``` {R echo=FALSE}
+boxplot(biomarker_out[,3:50]) # all proteins
+```
+
+We can examine which proteins contain more outliers than others in the following table:
+
+``` {R echo=FALSE}
+outliers <- diagnose_outlier(biomarker_clean2)
+outliers %>%
+  arrange(desc(outliers_cnt))%>%
+  head(20)%>%
+  select(protein=variables,outliers_cnt)
+```
+
+The protein FCG2A	had the most outliers (31), followed by Hemoglobin with 23	outliers, and Haptoglobin (Mixed Type) and Chk2 each with 22 outliers. We can also take a look at other statistics such as the mean of the outliers and the percent of outliers in each protein. Once again, the proteins FCG2A, Hemoglobin, Haptoglobin (Mixed Type), and Chk2 had the highest outlier ratios of 20.12987, 14.93506, 14.28571, and 14.28571, respectively.
+
+``` {R echo=FALSE}
+outliers %>%
+  arrange(desc(outliers_ratio))%>%
+  head(20)%>%
+  select(protein=variables,outliers_ratio,outliers_mean)
+```
 
 ### Methodlogical variations
 
