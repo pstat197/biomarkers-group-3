@@ -31,3 +31,8 @@ biomarkerRaw %>%
   # observed protein from the sample has a heavy skew to the left. Log transforming
   # these values would lessen the skew, making it easier to perform meaningful
   # statistical analysis
+
+# Informal explanation - upregulated or downregulated data (compared to a control sample)
+# will not be normally distributed, which can be problematic if we want to use a parametric statistical test.
+# Also, by log transforming the data, upregulated and downregulated expression data 
+# can then have a similar scale of changes.
