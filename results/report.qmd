@@ -63,7 +63,7 @@ They also evaluated the impacts of ethnicity, seasonal allergies, age, and psych
 
 The first task required us to use the raw data to examine the distribution of the protein amounts. We did this in order to find out why the data was log transformed in the final version of the data set, before they began to use the data set for modeling and predictive purposes.
 
-The first step we took during this task was to grab a sample of proteins from the data set. In the interest of randomness and simplicity, we pulled columns 15:25 from the raw data set, giving us a sample of 10 unknown proteins. Secondly, we pivoted the data long, in order to simplify our next task in ggplot. Lastly, we created histograms of the random sample of 10 proteins (reminder that these results are from the raw data before any log transformations).
+The first step we took during this task was to grab a sample of proteins from the data set. In the interest of randomness and simplicity, we pulled columns 15:25 from the raw data set, giving us a sample of 11 unknown proteins. Secondly, we pivoted the data long, in order to simplify our next task in ggplot.
 
 ```{R echo = TRUE}
 biomarkerRaw <- read_csv('../data/biomarker-raw.csv', show_col_types = FALSE)
@@ -83,7 +83,7 @@ biomarkerRaw <- biomarkerRaw %>%
   arrange(protein)
 ```
 
-After examining the histograms of the raw data, it is clear to see why the team decided to log transform the protein levels before beginning statistical analysis. The purpose of log transforming data is to make highly skewed data less skewed, which can be valuable for a many different purposes including predictive modeling. In addition to being highly skewed, most of the proteins have a high density in a small area, which a log transformation will also help with.
+Lastly, we created histograms of the random sample of 11 proteins (reminder that these results are from the raw data before any log transformations).
 
 ```{R echo = TRUE}
 # Assessing the distribution
@@ -93,6 +93,7 @@ biomarkerRaw %>%
   facet_wrap(~ protein, scales = "free") +
   labs(title = "Before Log Transformation of Data")
 ```
+After examining the histograms of the raw data, it is clear to see why the team decided to log transform the protein levels before beginning statistical analysis. The purpose of log transforming data is to make highly skewed data less skewed, which can be valuable for a many different purposes including predictive modeling. In addition to being highly skewed, most of the proteins have a high density in a small area, which a log transformation will also help with.
 
 (INSERT TASK TWO DOCUMENTATION HERE)
 
