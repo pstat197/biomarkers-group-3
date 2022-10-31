@@ -122,7 +122,9 @@ cors <- data.frame(cors)
 colnames(cors) <- c('protein', 'correlation')
 cors
 
-head(sort(cors$profits,decreasing=TRUE), n = 50)
+cors %>%
+  arrange(desc(correlation))%>%
+  head(20)
 
 # not right
 #for (i in length(colnames(biomarker_train[,-c(1,2)])[1:4])){
@@ -134,12 +136,7 @@ head(sort(cors$profits,decreasing=TRUE), n = 50)
   #cors <- rbind(cors, row_i)
 #}
 
-<<<<<<< Updated upstream
-cors
-=======
-
-#cors
->>>>>>> Stashed changes
+#cors 
 
 # compute correlations, not right
 #asd_clean %>%
