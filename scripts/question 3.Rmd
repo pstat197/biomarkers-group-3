@@ -154,9 +154,6 @@ cors %>%
   #summarize(correlation = cor(ados, level))
 ```
 
-```{r}
-proteins_2 # top 20
-```
 
 Logistic Regression 
 
