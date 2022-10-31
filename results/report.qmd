@@ -22,9 +22,6 @@ library(tidymodels)
 This project revolves around a dataset which seeks to find a statistical association between levels of proteins in plasma/serum and diagnosed Autism Spectrum Disorder (ASD). A brief description of the sample states that 76 boys with ASD, and 78 typically developing boys were the sample for the dataset. Preprocessing of the raw data file is critical to making a statistical analysis; a log transformation is needed on the raw data file as almost all of the protein levels show a skewed, and high density distribution. Exploratory analysis of outlying values is described after the preprocessing. The methodology used in the predictive portion of the research paper that this project is based off of was used with altered parameters (top 20 proteins instead of top 10). We seek to find a comparable protein panel that achieves the same and/or improved classification accuracy.
 
 ## Dataset
-
-Write a brief data description, including: how data were obtained; sample characteristics; variables measured; and data preprocessing. This can be largely based on the source paper and should not exceed 1-2 paragraphs.
-
 -   Background: levels of proteins in plasma/serum are altered in autism spectrum disorder (ASD)
 
 -   Data comes from Hewitson et al. (2021). Blood biomarker discovery for autism spectrum disorder: A proteomic analysis. PLoS One. 2021 Feb 24
@@ -37,7 +34,7 @@ Write a brief data description, including: how data were obtained; sample charac
 
 -   Outliers were handled by clipping any z-transformed values less than -3 and greater than 3 to -3 and 3, respectively.
 
--   ours includes simplifications: repeated RF (Random Forest) fitting, forward selection in the logistic regression model, and repeated estimation of AUROC (Area Under the Receiver Operating Characteristics) for the final classifier(s) were excluded.
+-   Includes simplifications: repeated RF (Random Forest) fitting, forward selection in the logistic regression model, and repeated estimation of AUROC (Area Under the Receiver Operating Characteristics) for the final classifier(s) were excluded.
 
 -   Our goal: explore sensitivity of results to certain design choices methodology
 

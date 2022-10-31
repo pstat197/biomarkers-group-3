@@ -145,7 +145,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="dataset" class="level2">
 <h2 class="anchored" data-anchor-id="dataset">Dataset</h2>
-<p>Write a brief data description, including: how data were obtained; sample characteristics; variables measured; and data preprocessing. This can be largely based on the source paper and should not exceed 1-2 paragraphs.</p>
 <ul>
 <li><p>Background: levels of proteins in plasma/serum are altered in autism spectrum disorder (ASD)</p></li>
 <li><p>Data comes from Hewitson et al.&nbsp;(2021). Blood biomarker discovery for autism spectrum disorder: A proteomic analysis. PLoS One. 2021 Feb 24</p></li>
@@ -153,7 +152,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><p>A total of 1,125 proteins were analyzed from each sample (1,317 measured, 192 unknown onesfailed quality control)</p></li>
 <li><p>The published analysis excluded 192 unidentified variables that we will include in our analysis</p></li>
 <li><p>Outliers were handled by clipping any z-transformed values less than -3 and greater than 3 to -3 and 3, respectively.</p></li>
-<li><p>ours includes simplifications: repeated RF (Random Forest) fitting, forward selection in the logistic regression model, and repeated estimation of AUROC (Area Under the Receiver Operating Characteristics) for the final classifier(s) were excluded.</p></li>
+<li><p>Includes simplifications: repeated RF (Random Forest) fitting, forward selection in the logistic regression model, and repeated estimation of AUROC (Area Under the Receiver Operating Characteristics) for the final classifier(s) were excluded.</p></li>
 <li><p>Our goal: explore sensitivity of results to certain design choices methodology</p></li>
 </ul>
 <p>SAMPLE CHARACTERISTICS: see slide 6 of first lecture</p>
