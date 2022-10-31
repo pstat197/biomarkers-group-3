@@ -1,7 +1,7 @@
 ---
 title: "Biomarkers of ASD"
 subtitle: "If you want a subtitle put it here"
-author: "List names here"
+author: "Hannah Li; Kabir Snell; Kassandra Trejo-Zamora; AO XU"
 date: last-modified
 published-title: "Updated"
 editor: visual
@@ -93,6 +93,7 @@ biomarkerRaw %>%
   facet_wrap(~ protein, scales = "free") +
   labs(title = "Before Log Transformation of Data")
 ```
+
 After examining the histograms of the raw data, it is clear to see why the team decided to log transform the protein levels before beginning statistical analysis. The purpose of log transforming data is to make highly skewed data less skewed, which can be valuable for a many different purposes including predictive modeling. In addition to being highly skewed, most of the proteins have a high density in a small area, which a log transformation will also help with.
 
 (INSERT TASK TWO DOCUMENTATION HERE)
