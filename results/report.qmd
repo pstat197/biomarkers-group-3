@@ -137,7 +137,7 @@ outliers %>%
   head(20)%>%
   select(protein=variables,outliers_ratio,outliers_mean)
 ```
-We can also observe how the outliers effect each of the protein's mean values in the table below, which is ordered from the highest to lowest change in mean from including and excluding outliers.
+We can also observe how the outliers effect each of the protein's mean values in the table and plots below. The table is ordered from the highest to lowest change in mean from including and excluding outliers.
 
 ``` {R echo=FALSE}
 outliers %>%
@@ -146,6 +146,11 @@ outliers %>%
   select(protein=variables,with_outliers_mean=with_mean, without_outliers_mean =without_mean) %>%
   head(20)
 ```
+
+``` {R echo=FALSE}
+plot_outlier(diagnose_outlier(biomarker_clean2))
+```
+
 ### Methodlogical variations
 
 In the third task we conducted the same experiment from the paper but this time we partitioned the data into a testing and training data set in order to conduct accuracy metrics with our models and testing set. Instead of only selecting the top ten proteins from each model and the common proteins among them, in this analysis we selected the top twenty proteins from the random forest model, the t-test, and the correlation with ADOS model. From there we used a fuzzy intersection, where we examined the elements that are common in at least n of the sets. Therefore in this experiment we can look at the proteins that were selected in two of the models. In this case we used the random forest model and the t-test model to examine which ten proteins were common among them. After using each model on our data we found that the "Top 10" common proteins were IgD, Cadherin-5, RELT, DERM, LT-4, Troponin I, skeletal,fast twitch, MAPK2, MATN2, IGFBP-1,M2-PK. These are identified as the "Core Proteins" that were common to both of the methods.
