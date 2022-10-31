@@ -1,6 +1,5 @@
 ---
 title: "Biomarkers of ASD"
-subtitle: "If you want a subtitle put it here"
 author: "Hannah Li; Kabir Snell; Kassandra Trejo-Zamora; AO XU"
 date: last-modified
 published-title: "Updated"
@@ -13,9 +12,6 @@ execute:
   echo: false
   cache: true
 ---
-
-Use this as a template. Keep the headers and remove all other text. In all, your report can be quite short. When it is complete, render and then push changes to your team repository.
-
 ```{r}
 library(tidyverse)
 library(tidymodels)
@@ -33,13 +29,13 @@ Write a brief data description, including: how data were obtained; sample charac
 
 -   Data comes from Hewitson et al. (2021). Blood biomarker discovery for autism spectrum disorder: A proteomic analysis. PLoS One. 2021 Feb 24
 
--   has serum samples from 76 boys with ASD and 78 typically developing (TD) boys, 18 months-8 years of age
+-   Has serum samples from 76 boys with ASD and 78 typically developing (TD) boys, 18 months-8 years of age
 
 -   A total of 1,125 proteins were analyzed from each sample (1,317 measured, 192 unknown onesfailed quality control)
 
--   the published analysis excluded 192 unidentified variables that we will include in our analysis
+-   The published analysis excluded 192 unidentified variables that we will include in our analysis
 
--   outliers were handled by clipping any z-transformed values less than -3 and greater than 3 to -3 and 3, respectively.
+-   Outliers were handled by clipping any z-transformed values less than -3 and greater than 3 to -3 and 3, respectively.
 
 -   ours includes simplifications: repeated RF (Random Forest) fitting, forward selection in the logistic regression model, and repeated estimation of AUROC (Area Under the Receiver Operating Characteristics) for the final classifier(s) were excluded.
 
