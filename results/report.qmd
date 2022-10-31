@@ -38,7 +38,9 @@ Write a brief data description, including: how data were obtained; sample charac
 -   A total of 1,125 proteins were analyzed from each sample (1,317 measured, 192 unknown onesfailed quality control)
 
 -   the published analysis excluded 192 unidentified variables that we will include in our analysis
-- outliers were handled by clipping any z-transformed values less than -3 and greater than 3 to -3 and 3, respectively.
+
+-   outliers were handled by clipping any z-transformed values less than -3 and greater than 3 to -3 and 3, respectively.
+
 -   ours includes simplifications: repeated RF (Random Forest) fitting, forward selection in the logistic regression model, and repeated estimation of AUROC (Area Under the Receiver Operating Characteristics) for the final classifier(s) were excluded.
 
 -   Our goal: explore sensitivity of results to certain design choices methodology
@@ -51,10 +53,9 @@ Summarize the methodology of the paper in 1-3 paragraphs. You need not explain t
 
 The paper by Hewitson et al. discussed identifying biological markers for Autism spectrum disorder (ASD) risk through proteins. They combined three algorithms and utilized machine learning to ultimately form a panel of proteins that may be useful as a blood biological marker to predict ASD risk in boys. They trained random forest models 1,000 times using normalized data. Each protein's importance value, which was represented using mean decrease in Gini Index, was averaged over the 1,000 random forest simulations and the 10 proteins with the highest averaged importance values were selected. They used t-tests to examine the significant differences between means of the two groups, ASD and TD, and selected the 10 proteins with the highest significant t-test values. They also calculated each protein's correlation with ADOS total scores to measure ASD severity, and selected the 10 proteins with the highest absolute value of correlation coefficients.
 
-They then found 5 'core' proteins- mitogen-activated protein kinase 14 (MAPK14), immunoglobulin D (IgD), dermatopontin (DERM), ephrin type-B receptor 2 (EPHB2), and soluble urokinase-type plasminogen activator receptor (suPAR)- that were commonly selected across the three methods (random forest, t-test, and correlation approach). They then trained a logistic regression predictive model with these core proteins while adding the leftover 13 proteins one by one, and calculated the area under the curve (AUC) for a test dataset. This helped them identify 4 additional proteins, receptor tyrosine kinase-like orphan receptor 1 [ROR1], platelet receptor Gl24 [GI24], eukaryotic translation initiation factor 4H [elF-4H], and arylsulfatase B [ARSB], that increased the AUC, resulting in a final panel of 9 proteins.
+They then found 5 'core' proteins- mitogen-activated protein kinase 14 (MAPK14), immunoglobulin D (IgD), dermatopontin (DERM), ephrin type-B receptor 2 (EPHB2), and soluble urokinase-type plasminogen activator receptor (suPAR)- that were commonly selected across the three methods (random forest, t-test, and correlation approach). They then trained a logistic regression predictive model with these core proteins while adding the leftover 13 proteins one by one, and calculated the area under the curve (AUC) for a test dataset. This helped them identify 4 additional proteins, receptor tyrosine kinase-like orphan receptor 1 \[ROR1\], platelet receptor Gl24 \[GI24\], eukaryotic translation initiation factor 4H \[elF-4H\], and arylsulfatase B \[ARSB\], that increased the AUC, resulting in a final panel of 9 proteins.
 
 They also evaluated the impacts of ethnicity, seasonal allergies, age, and psychiatric medications as potential confounding factors using t-tests or Spearman's rank correlation, and found that ethnicity and seasonal allergies had no effect, and that age and use of psychiatric medication had insignificantly small effects.
-
 
 ## Findings
 
@@ -66,7 +67,7 @@ Tasks 1-2
 
 ### Methodlogical variations
 
-Task 3
+In the third task we conducted the same experiment from the paper but this time we partitioned the data into a testing and training data set in order to conduct accuracy metrics with our models and testing set. Instead of only selecting the top ten proteins from each model and the common proteins among them, in this analysis we selected the top twenty proteins from the random forest model, the t-test, and the correlation with ADOS model. From there we used a fuzzy intersection, where we examined the elements that are common in at least n of the sets. Therefore in this experiment we can look at the proteins that were selected in two of the models. In this case we used the random forest model and the t-test model to examine which ten proteins were common among them. After using each model on our data we found that the "Top 10" common proteins were IgD, Cadherin-5, RELT, DERM, LT-4, Troponin I, skeletal,fast twitch, MAPK2, MATN2, IGFBP-1,M2-PK. These are identified as the "Core Proteins" that were common to both of the methods.
 
 ### Improved classifier
 
