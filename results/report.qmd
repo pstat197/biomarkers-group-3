@@ -17,6 +17,9 @@ execute:
 library(tidyverse)
 library(tidymodels)
 library(dlookr)
+library(modelr)
+library(rsample)
+library(yardstick)
 ```
 
 ## Abstract
@@ -26,7 +29,6 @@ This project revolves around a dataset which seeks to find a statistical associa
 ## Dataset
 
 In this study a total of 154 boys were enrolled and split into two groups, ASD and TD. The ASD group had a mean age of 5.6 years and the TD group had a similar mean age of 5.7 years. The factors focused on in this data was the ethnicity with a majority White/Caucasian, Co-morbid conditions where many reported none and some reported seasonal allergies, and lastly psychiatric medications where again almost all but a few reported none. They were given an ADOS total score that clinical psychologists were able to determine using diagnostic algorithms. These scores are used to test ASD severity among groups. The samples taken from these boys was in the form of a fasting blood draw. Where the boys gave 3.5 ml in the morning before they ate. The blood samples underwent inversions, being centrifuged, and transferred to coded cryovials where it was then shipped to SomaLogic labs for further analysis.
-
 
 Originally, 1317 proteins were measured as the optimal subset of proteins for ASD measure. However, after performing quality control there were 192 unidentified variables that were then excluded from the analysis leaving us with 1125 proteins to conduct our analysis on. We analyzed these proteins but before doing so, some data preprocessing was conducted. Here we normalized and log transformed the data and to deal with any outliers we z transformed values that were either greater than 3 or less than -3. From here we are able to fit our models to the data to obtain our top predictive proteins.
 
@@ -79,7 +81,6 @@ biomarkerRaw %>%
 
 After examining the histograms of the raw data, it is clear to see why the team decided to log transform the protein levels before beginning statistical analysis. The purpose of log transforming data is to make highly skewed data less skewed, which can be valuable for a many different purposes including predictive modeling. In addition to being highly skewed, most of the proteins have a high density in a small area, which a log transformation will also help with.
 
-
 We then proceeded to remove the outlier trimming completed during preprocessing of the biomarker data. All observations that had values outside the interval (-3,3) had their values reverted back to normal.
 
 ```{R echo=TRUE}
@@ -104,13 +105,13 @@ head(biomarker_out, 15)
 
 We constructed a boxplot for the values of all proteins. As seen in the plot, many of the proteins have significant outliers that lie far above or below the majority of the rest of the data.
 
-``` {R echo=FALSE}
+```{R echo=FALSE}
 boxplot(biomarker_out[,3:50]) # all proteins
 ```
 
 We can examine which proteins contain more outliers than others in the following table:
 
-``` {R echo=FALSE}
+```{R echo=FALSE}
 outliers <- diagnose_outlier(biomarker_clean2)
 outliers %>%
   arrange(desc(outliers_cnt))%>%
@@ -118,17 +119,18 @@ outliers %>%
   select(protein=variables,outliers_cnt)
 ```
 
-The protein FCG2A	had the most outliers (31), followed by Hemoglobin with 23	outliers, and Haptoglobin (Mixed Type) and Chk2 each with 22 outliers. We can also take a look at other statistics such as the mean of the outliers and the percent of outliers in each protein. Once again, the proteins FCG2A, Hemoglobin, Haptoglobin (Mixed Type), and Chk2 had the highest outlier ratios of 20.12987, 14.93506, 14.28571, and 14.28571, respectively.
+The protein FCG2A had the most outliers (31), followed by Hemoglobin with 23 outliers, and Haptoglobin (Mixed Type) and Chk2 each with 22 outliers. We can also take a look at other statistics such as the mean of the outliers and the percent of outliers in each protein. Once again, the proteins FCG2A, Hemoglobin, Haptoglobin (Mixed Type), and Chk2 had the highest outlier ratios of 20.12987, 14.93506, 14.28571, and 14.28571, respectively.
 
-``` {R echo=FALSE}
+```{R echo=FALSE}
 outliers %>%
   arrange(desc(outliers_ratio))%>%
   head(20)%>%
   select(protein=variables,outliers_ratio,outliers_mean)
 ```
+
 We can also observe how the outliers effect each of the protein's mean values in the table and plots below. The table is ordered from the highest to lowest change in mean from including and excluding outliers.
 
-``` {R echo=FALSE}
+```{R echo=FALSE}
 outliers %>%
   mutate(mean_difference=abs(without_outliers_mean-with_mean))%>%
   arrange(desc(mean_difference)) %>%
@@ -136,7 +138,7 @@ outliers %>%
   head(20)
 ```
 
-``` {R echo=FALSE}
+```{R echo=FALSE}
 plot_outlier(diagnose_outlier(biomarker_clean2))
 ```
 
@@ -167,7 +169,49 @@ cors %>%
   head(20)
 ```
 
-
 ### Improved classifier
 
-Task 4
+Task 4：
+
+Fitting a Gaussian model:
+
+```{r}
+# fit glm
+fit1 <- glm(class ~ ., 
+           data = biomarker, 
+           family = "gaussian")
+tidy(fit1)
+```
+
+Accuracy measures
+
+```{r}
+# tabulate
+testing(partitions) %>%
+  add_predictions(fit1, type = 'response') %>%
+  mutate(pred.class = (pred > 0.5)) %>%
+  select(class, pred.class) %>%
+  table()
+```
+
+```{r}
+# compute specificity
+pred_df %>%
+  specificity(truth = group, 
+              estimate = pred.group,
+              event_level = 'second')
+# accuracy
+pred_df %>%
+  accuracy(truth = group,
+              estimate = pred.group,
+              event_level = 'second')
+# sensitivity
+pred_df %>%
+  sensitivity(truth = group,
+              estimate = pred.group,
+              event_level = 'second')
+```
+
+The accuracy for using Gaussian model is 0.6774194 while that of using logistic regression model is 0.7096774. Also, Gamma linear models are not capable to use in this data.
+
+In a short, we find a simpler and similar way that using Gaussian model to achieve comparable classification accuracy.

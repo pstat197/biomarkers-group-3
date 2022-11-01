@@ -114,7 +114,7 @@ Fitting a Gaussian model:
 # fit glm
 fit1 <- glm(class ~ ., 
            data = biomarker, 
-           family = "gaussian")
+           family = gaussian(link = "identity"))
 ```
 
 ```{r}
@@ -158,7 +158,54 @@ pred_df %>%
               estimate = pred.group,
               event_level = 'second')
 ```
+Fitting a Quasi model:
+```{r}
+# fit glm
+fit2 <- glm(class ~ ., 
+           data = biomarker, 
+           family = quasi(link = "identity", variance = "constant"))
+```
 
+```{r}
+tidy(fit2)
+```
+Accuracy measures
+```{r}
+# tabulate
+testing(partitions) %>%
+  add_predictions(fit2, type = 'response') %>%
+  mutate(pred.class = (pred > 0.5)) %>%
+  select(class, pred.class) %>%
+  table()
+```
+```{r}
+# store predictions as factors
+pred_df <- testing(partitions) %>%
+  add_predictions(fit2, type = 'response') %>%
+  mutate(pred.class = (pred > 0.5),
+         group = factor(class, labels = c('TD', 'ASD')),
+         pred.group = factor(pred.class, labels = c('TD', 'ASD'))) 
+
+# check order of factor levels
+pred_df %>% pull(group) %>% levels()
+```
+```{r}
+# compute specificity
+pred_df %>%
+  specificity(truth = group, 
+              estimate = pred.group,
+              event_level = 'second')
+# accuracy
+pred_df %>%
+  accuracy(truth = group,
+              estimate = pred.group,
+              event_level = 'second')
+# sensitivity
+pred_df %>%
+  sensitivity(truth = group,
+              estimate = pred.group,
+              event_level = 'second')
+```
 The accuracy for using Gaussian model is 0.6774194 while that of using logistic regression model is 0.7096774.
 In a short, we find a simpler and similar way that using Gaussian model to achieve comparable classification accuracy.
 
