@@ -84,6 +84,16 @@ After examining the histograms of the raw data, it is clear to see why the team 
 We then proceeded to remove the outlier trimming completed during preprocessing of the biomarker data. All observations that had values outside the interval (-3,3) had their values reverted back to normal.
 
 ```{R echo=TRUE}
+var_names <- read_csv('../data/biomarker-raw.csv', 
+                     col_names = F, 
+                     n_max = 2, 
+                     col_select = -(1:2)) %>%
+  t() %>%
+  as_tibble() %>%
+  rename(name = V1, 
+         abbreviation = V2) %>%
+  na.omit()
+
 biomarker_out <- read_csv('../data/biomarker-raw.csv', show_col_types = FALSE, 
          skip = 2,
          col_select = -2L,
@@ -110,8 +120,26 @@ boxplot(biomarker_out[,3:50]) # all proteins
 ```
 
 We can examine which proteins contain more outliers than others in the following table:
+```{r}
+
+biomarker_clean2 <- read_csv('../data/biomarker-raw.csv', 
+         skip = 2,
+         col_select = -2L,
+         col_names = c('group', 
+                       'empty',
+                       pull(var_names, abbreviation),
+                       'ados'),
+         na = c('-', '')) %>%
+  filter(!is.na(group)) %>%
+  # log transform, center and scale, and trim
+  mutate(across(.cols = -c(group, ados), 
+                ~ scale(log10(.x))[, 1], .at = 3)) %>%
+  # reorder columns
+  select(group, ados, everything())
+```
 
 ```{R echo=FALSE}
+
 outliers <- diagnose_outlier(biomarker_clean2)
 outliers %>%
   arrange(desc(outliers_cnt))%>%
@@ -130,13 +158,6 @@ outliers %>%
 
 We can also observe how the outliers effect each of the protein's mean values in the table and plots below. The table is ordered from the highest to lowest change in mean from including and excluding outliers.
 
-```{R echo=FALSE}
-outliers %>%
-  mutate(mean_difference=abs(without_outliers_mean-with_mean))%>%
-  arrange(desc(mean_difference)) %>%
-  select(protein=variables,with_outliers_mean=with_mean, without_outliers_mean =without_mean) %>%
-  head(20)
-```
 
 ```{R echo=FALSE}
 plot_outlier(diagnose_outlier(biomarker_clean2))
@@ -149,24 +170,92 @@ In the third task we conducted the same experiment from the paper but this time 
 Since the dataset included ADOS scores only for proteins in the ASD group and not the TD group, we computed the correlation of proteins with ADOS with only the ASD group. We calculated the correlation of each ASD protein with ADOS and looked at the twenty proteins with the highest absolute value correlations with ADOS. The top twenty proteins along with their correlations are shown in the table below.
 
 ```{r}
-cors <- data.frame(matrix(ncol= 2, nrow=0))
-
-ASD_proteins <-biomarker_clean[1:76,-c(1,2)]
-
-for (i in 1:length(ASD_proteins)){
-  #print(i)
-  cor_i <- cor(biomarker_clean[1:76,]$ados, ASD_proteins[i]) 
-
-  row_i <- cbind(colnames(biomarker_train[,-c(1,2)])[i], cor_i[[1,1]])
-  cors <- rbind(cors, row_i)
+trim <- function(x, .at){
+  x[abs(x) > .at] <- sign(x[abs(x) > .at])*.at
+  return(x)
 }
 
-cors <- data.frame(cors)
-colnames(cors) <- c('protein', 'correlation')
+biomarker_clean <- read_csv('../data/biomarker-raw.csv', 
+         skip = 2,
+         col_select = -2L,
+         col_names = c('group', 
+                       'empty',
+                       pull(var_names, abbreviation),
+                       'ados'),
+         na = c('-', '')) %>%
+  filter(!is.na(group)) %>%
+  # log transform, center and scale, and trim
+  mutate(across(.cols = -c(group, ados), 
+                ~ trim(scale(log10(.x))[, 1], .at = 3))) %>%
+  # reorder columns
+  select(group, ados, everything())
+```
 
-cors %>%
-  arrange(desc(abs(as.numeric(cors$correlation))))%>%
-  head(20)
+
+```{r}
+set.seed(638)
+biomarker_split<-initial_split(biomarker_clean, prop= 0.70,strata=group)
+biomarker_train<-training(biomarker_split)
+biomarker_test<-testing(biomarker_split)
+library(randomForest)
+```
+
+Random Forest
+```{r}
+predictors<- biomarker_train %>% 
+  select(-c(group,ados))
+
+response <- biomarker_train %>%  pull(group) %>%  factor()
+
+# fit the Random Forest 
+random_f<-randomForest(x= predictors, 
+                       y = response,
+                       ntree= 2000,
+                       importance= T)
+# check the errors 
+random_f$confusion
+
+# compute the importance scores 
+proteins_1<-random_f$importance %>% 
+  as_tibble() %>% 
+  mutate(protein= rownames(random_f$importance)) %>% 
+  slice_max(MeanDecreaseGini, n = 20) %>% 
+  pull(protein)
+```
+
+```{r}
+tt_fn<-function(.df) {
+  t_test(.df,
+         formula = level ~ group,
+         order= c('ASD', 'TD'), alternative = 'two-sided',
+         var.equal = F)
+}
+
+ttests_1<- biomarker_train %>% 
+  select(-ados) %>% 
+  pivot_longer(-group, names_to = 'protein', values_to = 'level' ) %>% 
+  nest(data=c(level, group)) %>% 
+  mutate(ttest = map(data, tt_fn)) %>% 
+  unnest(ttest) %>% 
+  arrange(p_value) %>% 
+  mutate( r= n(), hm= log(r) +1/(2*r) - digamma(1), rank=row_number(), 
+          p.adj= r*hm*p_value/rank)
+
+proteins_2<-ttests_1 %>% 
+  slice_min(p.adj, n =20) %>% 
+  pull(protein)
+```
+
+```{r}
+library(arsenal)
+
+protein_1<-data.frame(proteins_1)
+protein_2<-data.frame(proteins_2)
+
+names(protein_1)[names(protein_1) == "proteins_1"] <- "protein"
+names(protein_2)[names(protein_2) == "proteins_2"] <- "protein"
+common_protein<-generics::intersect(protein_1,protein_2)
+view(common_protein)
 ```
 
 ### Improved classifier
