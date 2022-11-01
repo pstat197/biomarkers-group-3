@@ -65,6 +65,11 @@ proteins_1 # top 20
 ```
 
 T-testing 
+## T-test method
+
+- t-test determines if there is a significant difference between the means of two groups.
+choose the top proteins with the most significant t-test values to use in the prediction model
+
 ```{r}
 tt_fn<-function(.df) {
   t_test(.df,
@@ -93,6 +98,10 @@ proteins_2 # top 20
 ```
 
 Correlation with ADOS
+## Correlation method
+
+- measures the statistical relationship between two variables (calculate each protein's correlation with ADOS total scores as a measure of ASD severity). 
+choose the top proteins with the highest absolute values of the correlation coefficient to use.
 ```{r}
 asd_clean <- biomarker_train %>% 
   select(group, ados) %>% 
@@ -131,7 +140,10 @@ cors %>%
 
 
 Logistic Regression 
-
+## Logistic regression model 
+- used with datasets based on the random forest, t-test, and correlation models (group (ASD or TD) is output)
+- randomly assigned 70% as training and 30% as test data. 
+- calculated model's AUC to evaluate it.
 ```{r}
 proteins_subset<-intersect(proteins_1,proteins_2)
 
