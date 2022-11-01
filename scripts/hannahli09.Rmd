@@ -37,9 +37,7 @@ from the preprocessing file
 # url <- 'https://raw.githubusercontent.com/pstat197/pstat197a/main/materials/labs/lab3-iteration/data/biomarker-raw.csv'
 
 
-# file path for Kassandra: /Users/kassandratrejo/Desktop/PSTAT197A/biomarkers-group-3/data/biomarker-raw.csv
-
-var_names <- read_csv('/Users/hannahli/Documents/Github/biomarkers-group-3/data/biomarker-raw.csv', 
+var_names <- read_csv('../data/biomarker-raw.csv', 
                      col_names = F, 
                      n_max = 2, 
                      col_select = -(1:2)) %>%
@@ -61,9 +59,8 @@ trim <- function(x, .at){
 
 remove the trimming 
 ```{r}
-# file path for Kassandra: /Users/kassandratrejo/Desktop/PSTAT197A/biomarkers-group-3/data/biomarker-raw.csv
 
-biomarker_clean2 <- read_csv('/Users/hannahli/Documents/Github/biomarkers-group-3/data/biomarker-raw.csv', 
+biomarker_clean2 <- read_csv('../data/biomarker-raw.csv', 
          skip = 2,
          col_select = -2L,
          col_names = c('group', 
@@ -84,7 +81,7 @@ view(biomarker_clean2)
 ```
 
 ```{r}
-biomarker_clean <- read_csv('/Users/hannahli/Documents/Github/biomarkers-group-3/data/biomarker-raw.csv', 
+biomarker_clean <- read_csv('../data/biomarker-raw.csv', 
          skip = 2,
          col_select = -2L,
          col_names = c('group', 
