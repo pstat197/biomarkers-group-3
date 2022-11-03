@@ -212,6 +212,8 @@ pred_df %>%
               event_level = 'second')
 ```
 
+After trying different models such as binomial, gaussian, Gamma, inverse.gaussian, poisson, we find a comparable model - Gaussian model.
+
 The accuracy for using Gaussian model is 0.6774194 while that of using logistic regression model is 0.7096774. Also, Gamma linear models are not capable to use in this data.
 
 In a short, we find a simpler and similar way that using Gaussian model to achieve comparable classification accuracy.
